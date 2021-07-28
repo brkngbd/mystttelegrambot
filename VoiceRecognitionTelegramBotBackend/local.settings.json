@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "YandexConnectionConfig:OAuthToken": "your yandex cloud api oauth token",
+    "YandexConnectionConfig:FolderId": "your yandex cloud api folder id",
+    "YandexConnectionConfig:TokenApiEndpointUri": "https://iam.api.cloud.yandex.net/iam/v1/tokens",
+    "YandexConnectionConfig:SpeechApiEndpointUri": "https://stt.api.cloud.yandex.net/speech/v1/stt:recognize",
+    "TelegramConnectionConfig:APIToken": "your telegram bot api token",
+    "TelegramConnectionConfig:APIEndPointUri": "https://api.telegram.org"
+  }
+}
