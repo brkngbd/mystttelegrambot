@@ -5,10 +5,6 @@
 
     public class RequestMessageParser
     {
-        public RequestMessageParser()
-        {
-        }
-
         public WebHookMessage Parse(string rawMessage)
         {
             var messageObject = GetMessage(rawMessage);

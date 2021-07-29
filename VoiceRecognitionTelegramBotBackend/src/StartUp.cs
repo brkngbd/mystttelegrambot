@@ -24,12 +24,19 @@ namespace VoiceRecognitionTelegramBotBackend
                     configuration.GetSection("TelegramConnectionConfig").Bind(settings);
                 });
 
+            builder.Services.AddOptions<ServiceBusConfig>()
+                .Configure<IConfiguration>((settings, configuration) =>
+                {
+                    configuration.GetSection("ServiceBusConfig").Bind(settings);
+                });
+
+            builder.Services.AddSingleton<ServiceBusSender>();
             builder.Services.AddSingleton<YandexConnectionHelper>();
             builder.Services.AddSingleton<YandexSpeechRecognizer>();
             builder.Services.AddSingleton<TelegramAPIConnectionHelper>();
             builder.Services.AddSingleton<TelegramFileDownloader>();
             builder.Services.AddSingleton<TelegramMessageSender>();
-            builder.Services.AddTransient<SpeechToText>();
+            builder.Services.AddTransient<MessageProcessingHandler>();
         }
     }
 }

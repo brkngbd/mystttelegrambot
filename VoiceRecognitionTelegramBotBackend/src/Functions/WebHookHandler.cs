@@ -1,20 +1,20 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-
 namespace VoiceRecognitionTelegramBotBackend
 {
+    using System;
+    using System.IO;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Azure.WebJobs;
+    using Microsoft.Azure.WebJobs.Extensions.Http;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
+
     public class WebHookHandler
     {
-        readonly SpeechToText speechToText;
+        readonly MessageProcessingHandler speechToText;
 
-        public WebHookHandler(SpeechToText speechToText)
+        public WebHookHandler(MessageProcessingHandler speechToText)
         {
             this.speechToText = speechToText;
         }
@@ -27,30 +27,27 @@ namespace VoiceRecognitionTelegramBotBackend
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string botToken = req.Query["bottoken"];
-            if ("secretkey2021"!= botToken)
+            if ("secretkey2021" != botToken)
             {
                 return new UnauthorizedResult();
             }
-
-            string keys = System.Text.Json.JsonSerializer.Serialize(req.Query.Keys);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
 
             log.LogInformation($"Request body: {requestBody}.");
-            log.LogInformation($"Request headers: {keys}.");
 
             try
             {
-                await this.speechToText.RecognizeAndReply(requestBody);
+                await this.speechToText.InitializeProcessing(requestBody);
             }
-            catch(Exception exc)
+            catch (Exception exc)
             {
                 log.LogError(exc.ToString());
             }
 
-            string responseMessage = $"This HTTP triggered function executed successfully. Request body: {requestBody} headers: {keys}.";
-                
+            string responseMessage = $"This HTTP triggered function executed successfully. Request body: {requestBody}";
+
             return new OkObjectResult(responseMessage);
 
         }
