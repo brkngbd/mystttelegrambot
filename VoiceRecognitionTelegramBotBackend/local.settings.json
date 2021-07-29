@@ -8,7 +8,7 @@
     "YandexConnectionConfig:TokenApiEndpointUri": "https://iam.api.cloud.yandex.net/iam/v1/tokens",
     "YandexConnectionConfig:SpeechApiEndpointUri": "https://stt.api.cloud.yandex.net/speech/v1/stt:recognize",
     "TelegramConnectionConfig:APIToken": "your telegram bot api token",
-    "TelegramConnectionConfig:APIEndPointUri": "https://api.telegram.org"
+    "TelegramConnectionConfig:APIEndPointUri": "https://api.telegram.org",
     "ServiceBusConfig:Connection": "your service bas connection string",
     "ServiceBusConfig:QueueName": "your service bus queue name"
   }
