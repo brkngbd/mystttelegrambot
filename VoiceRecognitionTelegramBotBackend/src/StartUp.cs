@@ -6,8 +6,13 @@ namespace VoiceRecognitionTelegramBotBackend
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
+    /// <summary>
+    ///   Used to tune up the dependency injection
+    /// </summary>
     public class Startup : FunctionsStartup
     {
+        /// <summary>Configures the specified builder.</summary>
+        /// <param name="builder">The builder.</param>
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddHttpClient();

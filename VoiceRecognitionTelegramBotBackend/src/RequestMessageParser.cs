@@ -1,13 +1,18 @@
 ﻿namespace VoiceRecognitionTelegramBotBackend
 {
-    using System.Collections.Generic;
     using System;
+    using System.Collections.Generic;
 
+    /// <summary>
+    ///   Used to parse Telegram WebHook API message
+    /// </summary>
     public class RequestMessageParser
     {
+        /// <summary>Parses the specified raw message.</summary>
+        /// <param name="rawMessage">The raw message.</param>
         public WebHookMessage Parse(string rawMessage)
         {
-            var messageObject = GetMessage(rawMessage);
+            var messageObject = this.GetMessage(rawMessage);
             if (messageObject != null)
             {
                 var chatObject = messageObject.GetValueFromDictionary<Dictionary<string, object>>("chat");
@@ -42,6 +47,8 @@
             throw new Exception("Failed to convert speech to text");
         }
 
+        /// <summary>Gets the message.</summary>
+        /// <param name="botMessage">The bot message.</param>
         private Dictionary<string, object> GetMessage(string botMessage)
         {
             var body = botMessage.ToObject<Dictionary<string, object>>();

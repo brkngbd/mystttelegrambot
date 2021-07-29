@@ -5,23 +5,33 @@
     using Azure.Messaging.ServiceBus;
     using Microsoft.Extensions.Options;
 
+    /// <summary>
+    ///   The ServiceBus queue message sender
+    /// </summary>
     public class ServiceBusSender
     {
-        private readonly ServiceBusClient _client;
-        private readonly Azure.Messaging.ServiceBus.ServiceBusSender _clientSender;
+        /// <summary>The client</summary>
+        private readonly ServiceBusClient client;
 
+        /// <summary>The client sender</summary>
+        private readonly Azure.Messaging.ServiceBus.ServiceBusSender clientSender;
+
+        /// <summary>Initializes a new instance of the <see cref="ServiceBusSender" /> class.</summary>
+        /// <param name="configuration">The configuration.</param>
         public ServiceBusSender(IOptions<ServiceBusConfig> configuration)
         {
             var connectionString = configuration.Value.Connection;
-            _client = new ServiceBusClient(connectionString);
-            _clientSender = _client.CreateSender(configuration.Value.QueueName);
+            this.client = new ServiceBusClient(connectionString);
+            this.clientSender = this.client.CreateSender(configuration.Value.QueueName);
         }
 
+        /// <summary>Sends the message.</summary>
+        /// <param name="payload">The payload.</param>
         public async Task SendMessage<T>(T payload)
         {
             string messagePayload = JsonSerializer.Serialize(payload);
             ServiceBusMessage message = new ServiceBusMessage(messagePayload);
-            await _clientSender.SendMessageAsync(message).ConfigureAwait(false);
+            await this.clientSender.SendMessageAsync(message).ConfigureAwait(false);
         }
     }
 }
