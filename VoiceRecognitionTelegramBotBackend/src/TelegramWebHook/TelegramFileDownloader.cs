@@ -10,11 +10,11 @@
     /// </summary>
     public class TelegramFileDownloader
     {
+        /// <summary>The HTTP client factory</summary>
+        private readonly IHttpClientFactory httpClientFactory;
+
         /// <summary>The connection helper</summary>
         private readonly TelegramAPIConnectionHelper connectionHelper;
-
-        /// <summary>The client</summary>
-        private readonly HttpClient client;
 
         /// <summary>Initializes a new instance of the <see cref="TelegramFileDownloader" /> class.</summary>
         /// <param name="httpClientFactory">The HTTP client factory.</param>
@@ -22,13 +22,15 @@
         public TelegramFileDownloader(IHttpClientFactory httpClientFactory, TelegramAPIConnectionHelper connectionHelper)
         {
             this.connectionHelper = connectionHelper;
-            this.client = httpClientFactory.CreateClient();
+            this.httpClientFactory = httpClientFactory;
         }
 
         /// <summary>Downloads the file.</summary>
         /// <param name="fileId">The file identifier.</param>
         public async Task<byte[]> DownloadFile(string fileId)
         {
+            var client = httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
+
             var fileInfo = await this.GetFileInfo(fileId);
             if (fileInfo.TryGetValue("file_path", out var filePathObject) && filePathObject != null)
             {
@@ -36,7 +38,7 @@
 
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-                HttpResponseMessage response = await this.client.SendAsync(request);
+                HttpResponseMessage response = await client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 var byteResponse = await response.Content.ReadAsByteArrayAsync();
                 if (byteResponse != null)
@@ -52,10 +54,12 @@
         /// <param name="fileId">The file identifier.</param>
         private async Task<Dictionary<string, object>> GetFileInfo(string fileId)
         {
+            var client = httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
+
             var url = this.connectionHelper.GetTelegramApiUri() + $"/getFile?file_id={fileId}";
             var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-            HttpResponseMessage response = await this.client.SendAsync(request);
+            HttpResponseMessage response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var jsonResponse = await response.Content.ReadAsStringAsync();
             if (!string.IsNullOrWhiteSpace(jsonResponse))

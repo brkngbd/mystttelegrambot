@@ -15,8 +15,8 @@
         /// <summary>The connection configuration</summary>
         private readonly YandexConnectionConfig connectionConfig;
 
-        /// <summary>The http client</summary>
-        private readonly HttpClient client;
+        /// <summary>The HTTP client factory</summary>
+        private readonly IHttpClientFactory httpClientFactory;
 
         /// <summary>Initializes a new instance of the <see cref="YandexConnectionHelper" /> class.</summary>
         /// <param name="httpClientFactory">The HTTP client factory.</param>
@@ -24,12 +24,14 @@
         public YandexConnectionHelper(IHttpClientFactory httpClientFactory, IOptions<YandexConnectionConfig> connectionConfig)
         {
             this.connectionConfig = connectionConfig.Value;
-            this.client = httpClientFactory.CreateClient();
+            this.httpClientFactory = httpClientFactory;
         }
 
         /// <summary>Gets the iam token.</summary>
         public async Task<string> GetIAMToken()
         {
+            var client = httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
+
             var values = new Dictionary<string, string>
             {
                 { "yandexPassportOauthToken", this.connectionConfig.OAuthToken }
@@ -39,7 +41,7 @@
             var request = new HttpRequestMessage(HttpMethod.Post, this.connectionConfig.TokenApiEndpointUri);
             request.Content = new StringContent(jsonRequestBody, System.Text.Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await this.client.SendAsync(request);
+            HttpResponseMessage response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var jsonResponse = await response.Content.ReadAsStringAsync();
             if (!string.IsNullOrWhiteSpace(jsonResponse))

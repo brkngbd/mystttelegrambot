@@ -14,8 +14,8 @@
         /// <summary>The connection helper</summary>
         private readonly TelegramAPIConnectionHelper connectionHelper;
 
-        /// <summary>The http client</summary>
-        private readonly HttpClient client;
+        /// <summary>The HTTP client factory</summary>
+        private readonly IHttpClientFactory httpClientFactory;
 
         /// <summary>Initializes a new instance of the <see cref="TelegramMessageSender" /> class.</summary>
         /// <param name="httpClientFactory">The HTTP client factory.</param>
@@ -23,7 +23,7 @@
         public TelegramMessageSender(IHttpClientFactory httpClientFactory, TelegramAPIConnectionHelper connectionHelper)
         {
             this.connectionHelper = connectionHelper;
-            this.client = httpClientFactory.CreateClient();
+            this.httpClientFactory = httpClientFactory;
         }
 
         /// <summary>Sends the message.</summary>
@@ -31,6 +31,8 @@
         /// <param name="messageText">The message text.</param>
         public async Task<string> SendMessage(string chatId, string messageText)
         {
+            var client = httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
+
             var url = this.connectionHelper.GetTelegramApiUri() + "/sendMessage";
 
             var values = new Dictionary<string, string>
@@ -43,7 +45,7 @@
             var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Content = new StringContent(jsonBody, System.Text.Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await this.client.SendAsync(request);
+            HttpResponseMessage response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var jsonResponse = await response.Content.ReadAsStringAsync();
             if (!string.IsNullOrWhiteSpace(jsonResponse))

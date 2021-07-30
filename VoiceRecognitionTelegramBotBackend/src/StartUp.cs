@@ -2,9 +2,13 @@
 
 namespace VoiceRecognitionTelegramBotBackend
 {
+    using System;
+    using System.Net.Http;
     using Microsoft.Azure.Functions.Extensions.DependencyInjection;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Polly;
+    using Polly.Extensions.Http;
 
     /// <summary>
     ///   Used to tune up the dependency injection
@@ -15,7 +19,9 @@ namespace VoiceRecognitionTelegramBotBackend
         /// <param name="builder">The builder.</param>
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddHttpClient();
+            builder.Services.AddHttpClient(Microsoft.Extensions.Options.Options.DefaultName)
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                .AddPolicyHandler(GetRetryPolicy());
 
             builder.Services.AddOptions<YandexConnectionConfig>()
                 .Configure<IConfiguration>((settings, configuration) =>
@@ -42,6 +48,15 @@ namespace VoiceRecognitionTelegramBotBackend
             builder.Services.AddSingleton<TelegramFileDownloader>();
             builder.Services.AddSingleton<TelegramMessageSender>();
             builder.Services.AddTransient<MessageProcessingHandler>();
+        }
+
+        /// <summary>Gets the retry policy.</summary>
+        static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
         }
     }
 }
