@@ -30,7 +30,7 @@
         /// <summary>Gets the iam token.</summary>
         public async Task<string> GetIAMToken()
         {
-            var client = httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
+            var client = this.httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
 
             var values = new Dictionary<string, string>
             {

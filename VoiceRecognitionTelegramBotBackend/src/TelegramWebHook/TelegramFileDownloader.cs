@@ -29,7 +29,7 @@
         /// <param name="fileId">The file identifier.</param>
         public async Task<byte[]> DownloadFile(string fileId)
         {
-            var client = httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
+            var client = this.httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
 
             var fileInfo = await this.GetFileInfo(fileId);
             if (fileInfo.TryGetValue("file_path", out var filePathObject) && filePathObject != null)
@@ -54,7 +54,7 @@
         /// <param name="fileId">The file identifier.</param>
         private async Task<Dictionary<string, object>> GetFileInfo(string fileId)
         {
-            var client = httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
+            var client = this.httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
 
             var url = this.connectionHelper.GetTelegramApiUri() + $"/getFile?file_id={fileId}";
             var request = new HttpRequestMessage(HttpMethod.Get, url);

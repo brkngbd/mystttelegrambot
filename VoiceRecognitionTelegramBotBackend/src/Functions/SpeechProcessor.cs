@@ -11,7 +11,7 @@ namespace VoiceRecognitionTelegramBotBackend
     /// </summary>
     public class SpeechProcessor
     {
-        /// <summary>The yandex speech to text</summary>
+        /// <summary>The Yandex speech to text</summary>
         private readonly YandexSpeechRecognizer yandexSpeechToText;
 
         /// <summary>The telegram file downloader</summary>
@@ -21,8 +21,8 @@ namespace VoiceRecognitionTelegramBotBackend
         private readonly TelegramMessageSender telegramMessageSender;
 
         /// <summary>Initializes a new instance of the <see cref="SpeechProcessor" /> class.</summary>
-        /// <param name="yandexSpeechToText">The yandex speech to text.</param>
-        /// <param name="telegramFileDownloader">The telegram file downloader.</param>
+        /// <param name="yandexSpeechToText">The Yandex speech to text.</param>
+        /// <param name="telegramFileDownloader">The Telegram file downloader.</param>
         /// <param name="telegramMessageSender">The telegram message sender.</param>
         public SpeechProcessor(YandexSpeechRecognizer yandexSpeechToText, TelegramFileDownloader telegramFileDownloader, TelegramMessageSender telegramMessageSender)
         {
@@ -42,7 +42,7 @@ namespace VoiceRecognitionTelegramBotBackend
             var parameters = context.GetInput<WebHookMessage>();
 
             byte[] file = await context.CallActivityAsync<byte[]>("OrchestrationActivity_DownloadFile", parameters.FileId);
-            if (file!=null)
+            if (file != null)
             {
                 string text = await context.CallActivityAsync<string>("OrchestrationActivity_ConvertToText", file);
                 if (!string.IsNullOrWhiteSpace(text))
@@ -54,7 +54,7 @@ namespace VoiceRecognitionTelegramBotBackend
             return outputs;
         }
 
-        /// <summary>Dowloads the file.</summary>
+        /// <summary>Downloads the file.</summary>
         /// <param name="fileId">The file identifier.</param>
         /// <param name="log">The log.</param>
         [FunctionName("OrchestrationActivity_DownloadFile")]
@@ -70,6 +70,7 @@ namespace VoiceRecognitionTelegramBotBackend
             {
                 log.LogInformation($"Failed convert voice message to text. '{e.Message}'.");
             }
+
             return result;
         }
 
@@ -89,6 +90,7 @@ namespace VoiceRecognitionTelegramBotBackend
             {
                 log.LogInformation($"Failed convert voice message to text. '{e.Message}'.");
             }
+
             return result;
         }
 
@@ -108,6 +110,7 @@ namespace VoiceRecognitionTelegramBotBackend
             {
                 log.LogInformation($"Failed to send a message back to chat. '{e.Message}'.");
             }
+
             return result;
         }
 

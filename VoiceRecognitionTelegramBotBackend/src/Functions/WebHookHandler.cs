@@ -36,7 +36,7 @@ namespace VoiceRecognitionTelegramBotBackend
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string botToken = request.Query["bottoken"];
-            if (botToken!="secretkey2021")
+            if (botToken != "secretkey2021")
             {
                 return new UnauthorizedResult();
             }

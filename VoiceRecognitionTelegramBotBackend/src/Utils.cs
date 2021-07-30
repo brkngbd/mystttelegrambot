@@ -4,6 +4,9 @@
     using System.Collections.Generic;
     using System.Text.Json;
 
+    /// <summary>
+    ///   Used to handle json
+    /// </summary>
     public static class JsonExtensions
     {
         /// <summary>
@@ -42,6 +45,9 @@
             return value.ToString().ToObject<T>();
         }
 
+        /// <summary>Gets the string from dictionary.</summary>
+        /// <param name="dictionary">The dictionary.</param>
+        /// <param name="key">The key.</param>
         public static string GetStringFromDictionary(this Dictionary<string, object> dictionary, string key)
         {
             if (!(dictionary.TryGetValue(key, out var value) && value != null))

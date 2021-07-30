@@ -31,7 +31,7 @@
         /// <param name="messageText">The message text.</param>
         public async Task<string> SendMessage(string chatId, string messageText)
         {
-            var client = httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
+            var client = this.httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
 
             var url = this.connectionHelper.GetTelegramApiUri() + "/sendMessage";
 

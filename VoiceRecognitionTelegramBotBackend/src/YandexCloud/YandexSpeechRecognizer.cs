@@ -32,7 +32,7 @@
         /// <param name="voiceData">The voice data.</param>
         public async Task<string> SpeechToText(byte[] voiceData)
         {
-            var client = httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
+            var client = this.httpClientFactory.CreateClient(Microsoft.Extensions.Options.Options.DefaultName);
 
             var url = this.tokenHelper.GetSpeechApiUri("ru-RU");
             var token = await this.tokenHelper.GetIAMToken();

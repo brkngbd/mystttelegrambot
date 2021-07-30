@@ -51,7 +51,7 @@ namespace VoiceRecognitionTelegramBotBackend
         }
 
         /// <summary>Gets the retry policy.</summary>
-        static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
         {
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
